@@ -1,4 +1,4 @@
-import { Layout, Menu, MenuProps } from "antd";
+import { Layout } from "antd";
 const { Header, Content } = Layout;
 import {
   UploadOutlined,
