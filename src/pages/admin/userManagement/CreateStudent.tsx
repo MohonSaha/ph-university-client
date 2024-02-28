@@ -9,6 +9,7 @@ import {
   useGetAcademicDepartmentsQuery,
   useGetAllSemestersQuery,
 } from "../../../redux/features/admin/academicManagement";
+import { useAddstudentMutation } from "../../../redux/features/admin/userManagement.api";
 
 const studentDummyData = {
   password: "monermoto",
@@ -62,7 +63,7 @@ const studentDefaultValue = {
   // dateOfBirth: "1990-01-01",
   bloodGroup: "A+",
 
-  email: "transaction.doe@example.com",
+  email: "transactionko.doe@example.com",
   contactNo: "123-456-7890",
   emergencyContactNo: "987-654-3210",
   presentAddress: "123 Main Street, Cityville",
@@ -90,11 +91,17 @@ const studentDefaultValue = {
 };
 
 const CreateStudent = () => {
+  const [addStudent, { data, error }] = useAddstudentMutation();
+
+  console.log({ data, error });
+
   const { data: sData, isLoading: sIsLoading } =
     useGetAllSemestersQuery(undefined);
 
-  const { data: dData, isLoading: dIsLoading } =
-    useGetAcademicDepartmentsQuery(undefined);
+  const { data: dData, isLoading: dIsLoading } = useGetAcademicDepartmentsQuery(
+    undefined,
+    { skip: sIsLoading }
+  );
 
   const semesterOptions = sData?.data?.map((item) => ({
     value: item._id,
@@ -107,12 +114,16 @@ const CreateStudent = () => {
   }));
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+    const studentData = {
+      password: "Student129",
+      student: data,
+    };
 
-    // const formData = new FormData();
-    // formData.append("data", JSON.stringify(data));
-    // // !! This is for development just for checking
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(studentData));
+    // !! This is for development just for checking
     // console.log(Object.fromEntries(formData));
+    addStudent(formData);
   };
   return (
     <Row>
