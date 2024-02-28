@@ -5,7 +5,10 @@ import { Button, Col, Divider, Row } from "antd";
 import PHSelect from "../../../components/form/PHSelect";
 import { bloodGroupOptions, genderOptions } from "../../../constants/global";
 import MYDatePicker from "../../../components/form/MYDatePicker";
-import { useGetAllSemestersQuery } from "../../../redux/features/admin/academicManagement";
+import {
+  useGetAcademicDepartmentsQuery,
+  useGetAllSemestersQuery,
+} from "../../../redux/features/admin/academicManagement";
 
 const studentDummyData = {
   password: "monermoto",
@@ -90,9 +93,17 @@ const CreateStudent = () => {
   const { data: sData, isLoading: sIsLoading } =
     useGetAllSemestersQuery(undefined);
 
+  const { data: dData, isLoading: dIsLoading } =
+    useGetAcademicDepartmentsQuery(undefined);
+
   const semesterOptions = sData?.data?.map((item) => ({
     value: item._id,
     label: `${item.name} ${item.year}`,
+  }));
+
+  const departmentOptions = dData?.data?.map((item) => ({
+    value: item._id,
+    label: item.name,
   }));
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
@@ -252,13 +263,14 @@ const CreateStudent = () => {
                 label="Admission Semester"
               />
             </Col>
-            {/* <Col span={24} lg={{ span: 8 }} md={{ span: 12 }}>
+            <Col span={24} lg={{ span: 8 }} md={{ span: 12 }}>
               <PHSelect
-                options={}
+                options={departmentOptions}
                 name="academicDepartment"
+                disabled={dIsLoading}
                 label="Academic Department"
               />
-            </Col> */}
+            </Col>
           </Row>
 
           <Button htmlType="submit">Submit</Button>
